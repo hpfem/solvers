@@ -1,0 +1,14 @@
+Solvers repository
+==================
+
+Contents:
+~~~~~~~~~
+
+packages
+  contains open source solvers for linear systems, for which thereare wrappers available in Hermes
+
+manuals
+  documentation for the solvers
+
+articles
+  various research and overview articles related to solving linear systems on a computer
