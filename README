@@ -5,7 +5,7 @@ Contents:
 ~~~~~~~~~
 
 packages
-  contains open source solvers for linear systems, for which thereare wrappers available in Hermes
+  contains open source solvers for linear systems, for which there are wrappers available in Hermes
 
 manuals
   documentation for the solvers
