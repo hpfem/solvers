@@ -1,8 +1,14 @@
 #!/bin/bash
 
+find ./ -name '*~' | xargs rm
+find ./ -name '*.swp' | xargs rm
+find ./ -name '*.o' | xargs rm
+find ./ -name '*.a' | xargs rm
+find ./ -name '*.so' | xargs rm
+
 tar -cjf mumps-4.9.2.spkg mumps-4.9.2
-tar -cjf petsc-3.1-p5.spkg petsc-3.1-p5
+tar -cjf petsc-3.1-p7.spkg petsc-3.1-p7
 tar -cjf superlu_mt-2.0.spkg superlu_mt-2.0
 tar -cjf superlu-4.0.spkg superlu-4.0
 tar -cjf umfpack-5.5.1.spkg umfpack-5.5.1
-
+tar -cjf trilinos-10.6.2.spkg trilinos-10.6.2
