@@ -6,9 +6,20 @@ find ./ -name '*.o' | xargs rm
 find ./ -name '*.a' | xargs rm
 find ./ -name '*.so' | xargs rm
 
-tar -cjf mumps-4.9.2.spkg mumps-4.9.2
-tar -cjf petsc-3.1-p7.spkg petsc-3.1-p7
-tar -cjf superlu_mt-2.0.spkg superlu_mt-2.0
-tar -cjf superlu-4.0.spkg superlu-4.0
-tar -cjf umfpack-5.5.1.spkg umfpack-5.5.1
-tar -cjf trilinos-10.6.2.spkg trilinos-10.6.2
+if [ $# = 1 ]; then
+  if [ $1 = "-f" ]; then
+    test -e mumps-4.9.2.spkg && rm -f mumps-4.9.2.spkg
+    test -e petsc-3.1-p7.spkg && rm -f petsc-3.1-p7.spkg
+    test -e superlu_mt-2.0.spkg && rm -f superlu_mt-2.0.spkg
+    test -e superlu-4.0.spkg && rm -f superlu-4.0.spkg
+    test -e umfpack-5.5.1.spkg && rm -f umfpack-5.5.1.spkg
+    test -e trilinos-10.6.2.spkg && rm -f trilinos-10.6.2.spkg
+  fi
+fi
+
+test ! -e mumps-4.9.2.spkg && tar -cjf mumps-4.9.2.spkg mumps-4.9.2
+test ! -e petsc-3.1-p7.spkg && tar -cjf petsc-3.1-p7.spkg petsc-3.1-p7
+test ! -e superlu_mt-2.0.spkg && tar -cjf superlu_mt-2.0.spkg superlu_mt-2.0
+test ! -e superlu-4.0.spkg && tar -cjf superlu-4.0.spkg superlu-4.0
+test ! -e umfpack-5.5.1.spkg && tar -cjf umfpack-5.5.1.spkg umfpack-5.5.1
+test ! -e trilinos-10.6.2.spkg && tar -cjf trilinos-10.6.2.spkg trilinos-10.6.2
