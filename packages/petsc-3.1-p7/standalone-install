@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+if [ $# = 0 ]; then
+   echo "Please specify the installation directory for the library.";
+   exit 1
+fi
+export SPKG_LOCAL=$1
+export __INSTALL_DIRECTORY=$SPKG_LOCAL
+
+PACKAGE_NAME=petsc
+
+test ! -d "$SPKG_LOCAL/lib/linux-cxx-real" && mkdir -p "$SPKG_LOCAL/lib/linux-cxx-real"
+test ! -d "$SPKG_LOCAL/lib/linux-cxx-complex" && mkdir -p "$SPKG_LOCAL/lib/linux-cxx-complex"
+test ! -d "$SPKG_LOCAL/include" && mkdir -p "$SPKG_LOCAL/include"
+
+cd src
+
+PETSC_DIR=`pwd`; export PETSC_DIR
+
+# REAL versions 
+  
+  # SERIAL versions
+  
+    # Basic PETSc
+  
+      # For FEMHub (using FEMHub's own BLAS and LAPACK)
+        #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-clanguage=c++
+  
+      # For Hermes alone (using system BLAS and LAPACK)
+        ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-clanguage=c++
+  
+    # PETSc with a few more bells and whistles for multigrid
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --download-hypre=1 --download-ml=1 --with-clanguage=c++ 
+      
+  # PARALLEL versions
+  
+    # Basic PETSc
+  
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-mpicxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi-dir="$SPKG_LOCAL/lib" --with-clanguage=c++
+  
+    # PETSc with a few more bells and whistles for multigrid
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-mpicxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi-dir="$SPKG_LOCAL/lib" --download-hypre=1 --download-ml=1 --with-clanguage=c++ 
+    
+
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+make 
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+make install
+# There must be only one mpiuni/mpi.h file for all configurations so as to make 
+# it easier to distinguish this file from another dummy mpi.h needed by a different
+# TPL (like MUMPS).
+mv "$SPKG_LOCAL/lib/linux-cxx-real/include/mpiuni" "$SPKG_LOCAL/include/mpiuni"
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+
+# COMPLEX versions  
+  
+  # SERIAL versions
+  
+    # Basic PETSc
+  
+      # For FEMHub (using FEMHub's own BLAS and LAPACK)
+        #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-scalar-type=complex --with-clanguage=c++
+  
+      # For Hermes alone (using system BLAS and LAPACK)
+          ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-scalar-type=complex --with-clanguage=c++
+  
+    # PETSc with a few more bells and whistles for multigrid
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --download-hypre=1 --download-ml=1 --with-scalar-type=complex --with-clanguage=c++
+      
+  # PARALLEL versions
+
+    # Basic PETSc
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-mpicxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi-dir="$SPKG_LOCAL/lib" --with-scalar-type=complex --with-clanguage=c++
+
+    # PETSc with a few more bells and whistles for multigrid
+      #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-mpicxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi-dir="$SPKG_LOCAL/lib" --download-hypre=1 --download-ml=1 --with-scalar-type=complex --with-clanguage=c++
+
+
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+make
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+make install
+rm -r -f "$SPKG_LOCAL/lib/linux-cxx-complex/include/mpiuni"
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+

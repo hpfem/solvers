@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [ $# = 0 ]; then
+   echo "Please specify the installation directory for the library.";
+   exit 1
+fi
+export SPKG_LOCAL=$1
+export __INSTALL_DIRECTORY=$SPKG_LOCAL
+
+PACKAGE_NAME=umfpack
+
+test ! -d "$SPKG_LOCAL/lib" && mkdir -p "$SPKG_LOCAL/lib"
+test ! -d "$SPKG_LOCAL/include" && mkdir -p "$SPKG_LOCAL/include"
+
+cd UFconfig; make clean
+cd ../AMD     ; make clean
+cd ../UMFPACK ; make clean
+
+cd ../UFconfig
+make
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+cd ../UMFPACK
+make
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+cd ../UFconfig; make install
+cd ../AMD     ; make install
+cd ../UMFPACK ; make install
+
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+

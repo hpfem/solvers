@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+if [ $# = 0 ]; then
+   echo "Please specify the installation directory for the library.";
+   exit 1
+fi
+export SPKG_LOCAL=$1
+export __INSTALL_DIRECTORY=$SPKG_LOCAL
+
+PACKAGE_NAME=superlu
+
+test ! -d "$SPKG_LOCAL/lib" && mkdir -p "$SPKG_LOCAL/lib"
+
+cd src
+
+MINC=make.default
+
+if [ $# = 2 ]; then
+    if [ $2 = "--debug" ]; then 
+        MINC=make.debug
+    elif [ $2 = "--no-optimizations" ]; then     
+        MINC=make.noopt
+    fi
+fi
+
+cp $MINC make.inc
+
+make clean
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+# INSTALL
+
+test ! -d "$SPKG_LOCAL/include" && mkdir -p "$SPKG_LOCAL/include"
+cp -r SRC/*.h "$SPKG_LOCAL/include"
+
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+

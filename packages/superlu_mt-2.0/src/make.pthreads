@@ -1,0 +1,64 @@
+############################################################################
+#
+#  Program:         SuperLU_MT
+#
+#  Module:          make.inc
+#
+#  Purpose:         Top-level Definitions
+#
+#  Creation date:   August 15, 1997
+#
+#  Modified:	    September 1, 1999 version 1.0
+#
+############################################################################
+#
+#  The machine (platform) identifier to append to the library names
+#
+PLAT = _PTHREAD
+
+#
+#  The name of the libraries to be created/linked to
+#
+SUPERLULIB   	= libsuperlu_mt$(PLAT).a
+
+TMGLIB       	= libtmglib$(PLAT).a
+MATHLIB		    = -lm 
+MPLIB 		    = -lpthread
+
+BLASDEF	      = -DUSE_VENDOR_BLAS
+#
+# Use the BLAS library in your SPKG_LOCAL. If not found, search for it in std.
+# system directories.
+#
+BLASLIB   = -L${SPKG_LOCAL}/lib -lblas
+
+#
+#  The archiver and the flag(s) to use when building archive (library)
+#  If your system has no ranlib, set RANLIB = echo.
+#
+ARCH          = ar
+ARCHFLAGS     = cr
+RANLIB       	= ranlib
+#
+# Definitions used by CPP:
+PREDEFS      	= -D$(PLAT)   # used for conditional compilation of 
+                            # parallelized blocks of source code
+#
+CC           	= gcc
+#CFLAGS       = $(PREDEFS) -fPIC        # disable optimizations 
+CFLAGS        = $(PREDEFS) -O2 -fPIC    # enable optimizations 
+                                        # (tests are likely to fail)
+#CFLAGS	      = $(PREDEFS) -g -fPIC     # include debugging support
+NOOPTS	     	= -fPIC
+BLASOPTS	    =
+LOADER       	= gcc
+LOADOPTS     	= -O -fPIC
+FORTRAN		    = gfortran
+#FFLAGS		    = -O -fPIC  # disable optimizations
+FFLAGS		    = -O2 -fPIC # enable optimizations (tests are likely to fail)
+#FFLAGS		    = -g -fPIC  # include debugging support
+
+#
+#  C preprocessor defs for compilation (-DNoChange, -DAdd_, or -DUpCase)
+#
+CDEFS        	= -DAdd_

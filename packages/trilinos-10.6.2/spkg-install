@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+if
+ [ "$SPKG_LOCAL" = "" ]; then
+   echo "SPKG_LOCAL undefined ... exiting";
+   echo "Maybe run 'sage -sh'?"
+   exit 1
+fi
+
+PACKAGE_NAME=trilinos
+
+export __INSTALL_DIRECTORY=$SPKG_LOCAL/external_solvers/$PACKAGE_NAME
+
+test ! -d bin-dir && mkdir bin-dir
+cd bin-dir
+
+export SWIG_EXECUTABLE=$SPKG_LOCAL/bin/swig
+cmake \
+ -D CMAKE_BUILD_TYPE:STRING=DEBUG \
+ -D CMAKE_C_FLAGS:STRING="-fPIC -Wl,-V" \
+ -D CMAKE_CXX_FLAGS:STRING="-fPIC -Wl,-V" \
+ -D CMAKE_Fortran_FLAGS:STRING="-fPIC" \
+ -D Trilinos_ENABLE_ALL_PACKAGES:BOOL=ON \
+ -D Trilinos_ENABLE_TESTS:BOOL=ON \
+ -D Trilinos_ENABLE_Thyra:BOOL=OFF \
+ -D Trilinos_ENABLE_MPI:BOOL=OFF \
+ -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
+ -D BUILD_SHARED_LIBS:BOOL=ON \
+ -D DART_TESTING_TIMEOUT:STRING=600 \
+ -D CMAKE_INSTALL_PREFIX:STRING=$__INSTALL_DIRECTORY \
+ -D BLAS_LIBRARY_DIRS:PATH="$SPKG_LOCAL/lib" \
+ -D LAPACK_LIBRARY_DIRS:PATH="$SPKG_LOCAL/lib" \
+ -D BLAS_LIBRARY_NAMES:STRING="blas;gfortran" \
+ ../src
+ 
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+make
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+make install
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi

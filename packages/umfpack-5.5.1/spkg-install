@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+if [ "$SPKG_LOCAL" = "" ]; then
+   echo "SPKG_LOCAL undefined ... exiting";
+   echo "Maybe run 'sage -sh'?"
+   exit 1
+fi
+
+PACKAGE_NAME=umfpack
+
+export __INSTALL_DIRECTORY=$SPKG_LOCAL/external_solvers/$PACKAGE_NAME
+
+test ! -d "$__INSTALL_DIRECTORY/lib" && mkdir -p "$__INSTALL_DIRECTORY/lib"
+test ! -d "$__INSTALL_DIRECTORY/include" && mkdir -p "$__INSTALL_DIRECTORY/include"
+
+cd UFconfig; make clean
+cd ../AMD     ; make clean
+cd ../UMFPACK ; make clean
+
+cd ../UFconfig
+make
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+cd ../UMFPACK
+make
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+cd ../metis-4.0
+cp *.a "$__INSTALL_DIRECTORY/lib"
+cp Lib/*.h "$__INSTALL_DIRECTORY/include"
+
+cd ../UFconfig; make install
+cd ../AMD     ; make install
+cd ../UMFPACK ; make install
+
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+

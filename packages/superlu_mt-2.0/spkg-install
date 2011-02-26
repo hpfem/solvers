@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+if [ "$SPKG_LOCAL" = "" ]; then
+   echo "SPKG_LOCAL undefined ... exiting";
+   echo "Maybe run 'SPKG -sh'?"
+   exit 1
+fi
+
+PACKAGE_NAME=superlu_mt
+
+export __INSTALL_DIRECTORY=$SPKG_LOCAL/external_solvers/$PACKAGE_NAME
+
+cd src
+
+MINC=make.openmp
+cp $MINC make.inc
+
+make clean
+make
+
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+# INSTALL
+
+test ! -d "$__INSTALL_DIRECTORY/lib" && mkdir -p "$__INSTALL_DIRECTORY/lib"
+cp -r lib/*.a "$__INSTALL_DIRECTORY/lib"
+
+test ! -d "$__INSTALL_DIRECTORY/include" && mkdir -p "$__INSTALL_DIRECTORY/include"
+cp -r SRC/*.h "$__INSTALL_DIRECTORY/include"
+
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+

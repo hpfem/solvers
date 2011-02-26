@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+if [ $# = 0 ]; then
+   echo "Please specify the installation directory for the library.";
+   exit 1
+fi
+export SPKG_LOCAL=$1
+export __INSTALL_DIRECTORY=$SPKG_LOCAL
+
+PACKAGE_NAME=trilinos
+
+test ! -d bin-dir && mkdir bin-dir
+cd bin-dir
+
+cmake \
+     -D CMAKE_BUILD_TYPE:STRING=DEBUG \
+     -D CMAKE_C_FLAGS:STRING="-fPIC -Wl,-V" \
+     -D CMAKE_CXX_FLAGS:STRING="-fPIC -Wl,-V" \
+     -D CMAKE_Fortran_FLAGS:STRING="-fPIC" \
+     -D BUILD_SHARED_LIBS:BOOL=ON \
+     -D Trilinos_ENABLE_ALL_PACKAGES:BOOL=OFF \
+     -D Trilinos_ENABLE_Teuchos:BOOL=ON \
+     -D Trilinos_ENABLE_Epetra:BOOL=ON \
+     -D Trilinos_ENABLE_EpetraExt:BOOL=ON \
+     -D Trilinos_ENABLE_AztecOO:BOOL=ON \
+     -D Trilinos_ENABLE_Ifpack:BOOL=ON \
+     -D Trilinos_ENABLE_ML:BOOL=ON \
+     -D Trilinos_ENABLE_Amesos:BOOL=ON \
+     -D Trilinos_ENABLE_NOX:BOOL=ON \
+     -D Trilinos_ENABLE_Anasazi:BOOL=ON \
+     -D Trilinos_ENABLE_Komplex:BOOL=ON \
+     -D Trilinos_ENABLE_Claps:BOOL=ON \
+     -D Trilinos_ENABLE_TESTS:BOOL=ON \
+     -D Trilinos_ENABLE_MPI:BOOL=OFF \
+     -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
+     -D DART_TESTING_TIMEOUT:STRING=600 \
+     -D CMAKE_INSTALL_PREFIX:STRING=$SPKG_LOCAL \
+     ../src
+     
+if [ $? -ne 0 ]; then
+   echo "Error configuring $PACKAGE_NAME."
+   exit 1
+fi
+
+make
+if [ $? -ne 0 ]; then
+   echo "Error building $PACKAGE_NAME."
+   exit 1
+fi
+
+make install
+if [ $? -ne 0 ]; then
+   echo "Error installing $PACKAGE_NAME."
+   exit 1
+fi
+
