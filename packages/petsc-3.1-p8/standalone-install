@@ -27,7 +27,7 @@ PETSC_DIR=`pwd`; export PETSC_DIR
         #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-clanguage=c++
   
       # For Hermes alone (using system BLAS and LAPACK)
-        ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-clanguage=c++
+        ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-clanguage=c++ --with-x=0
   
     # PETSc with a few more bells and whistles for multigrid
       #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-real" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --download-hypre=1 --download-ml=1 --with-clanguage=c++ 
@@ -73,7 +73,7 @@ fi
         #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-scalar-type=complex --with-clanguage=c++
   
       # For Hermes alone (using system BLAS and LAPACK)
-          ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-scalar-type=complex --with-clanguage=c++
+          ./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --with-scalar-type=complex --with-clanguage=c++ --with-x=0
   
     # PETSc with a few more bells and whistles for multigrid
       #./config/configure.py --prefix="$SPKG_LOCAL/lib/linux-cxx-complex" --with-blas-lapack-dir="$SPKG_LOCAL/lib" --with-pic=fPIC --with-shared=1 --with-mpi=0 --download-hypre=1 --download-ml=1 --with-scalar-type=complex --with-clanguage=c++
